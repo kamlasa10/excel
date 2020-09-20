@@ -3,9 +3,10 @@ import {ExcelComponent} from '@core/ExcelComponent';
 export class Formula extends ExcelComponent {
   static name = 'formula'
 
-  constructor($root) {
+  constructor($root, options) {
     super($root, {
-      listeners: ['input']
+      listeners: ['keyup', 'input'],
+      ...options
     })
   }
   toHTML() {
@@ -17,13 +18,31 @@ export class Formula extends ExcelComponent {
 
   init() {
     super.initListeners()
+    const input = this.$root.find('.input')
+
+    this.$on('table:input', (content) => {
+      input.text(content)
+    })
+
+    this.$on('table:select', (content) => {
+      input.text(content)
+    })
   }
 
   destroy() {
     super.removeListener()
   }
 
-  onInput() {
-    console.log('change')
+  onInput = (e) => {
+    const text = e.target.textContent
+    this.emitter.emit('formula:input', text)
+  }
+
+  onKeyup = (e) => {
+    const keys = ['Enter', 'Tab']
+    if (keys.includes(e.key)) {
+      e.preventDefault()
+      this.$emit('formula:done')
+    }
   }
 }

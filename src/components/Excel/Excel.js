@@ -1,4 +1,5 @@
 import {$} from '@core/Dom';
+import {Emitter} from '@core/Emitter';
 
 export class Excel {
   static name = 'excel'
@@ -10,10 +11,13 @@ export class Excel {
 
   getRoot() {
     const $root = $.create('div', Excel.name)
+    const componentOptions = {
+      emitter: new Emitter()
+    }
 
     this.components = this.components.map((Component => {
       const el = $.create('div', `${Component.name}`)
-      const component = new Component(el)
+      const component = new Component(el, componentOptions)
       el.html( component.toHTML())
 
       $root.append(el)
