@@ -1,54 +1,68 @@
-import {ExcelComponent} from '@core/ExcelComponent';
+import {renderToolbar} from '@/components/Toolbar/toolbar.template';
+import {$} from '@core/Dom';
+import {ComponentState} from '@core/ComponentState';
+import {kebabCaseToCamel, transformStrToArr} from '@core/utils';
 
-export class Toolbar extends ExcelComponent {
+export class Toolbar extends ComponentState {
   static name = 'toolbar'
 
-  constructor($root) {
+  constructor($root, options) {
     super($root, {
-      listeners: ['click']
+      ...options,
+      listeners: ['click'],
     })
   }
 
   toHTML() {
-    return `
-      <div class="button">
-          <span class="material-icons">
-              format_underlined
-          </span>
-      </div>
-      <div class="button">
-          <span class="material-icons">
-              format_italic
-          </span>
-      </div>
-      <div class="button">
-          <span class="material-icons">
-              format_bold
-          </span>
-      </div>
-      <div class="button">
-          <span class="material-icons">
-              format_align_left
-          </span>
-      </div>
-      <div class="button">
-          <span class="material-icons">
-              format_align_center
-          </span>
-      </div>
-      <div class="button">
-          <span class="material-icons">
-              format_align_right
-          </span>
-      </div>
-    `
+    return renderToolbar(this.state)
+  }
+
+  get template() {
+    return renderToolbar(this.state)
+  }
+
+  prepare() {
+    this.initState({
+      textAlign: 'left',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      textDecoration: 'none'
+    })
   }
 
   init() {
     super.initListeners(this)
+    this.$on('table:select', (_, cell) => {
+      let styles = transformStrToArr(cell.attr('style'), ';')
+
+      styles = styles.reduce((acc, style) => {
+        let [prop, value] = transformStrToArr(style, ':')
+        prop = kebabCaseToCamel(prop).replace(/ /g, '')
+
+        if (!prop || prop === 'width') {
+          return acc
+        }
+
+        value = value.replace(/ /g, '')
+        acc[prop] = value
+        return acc
+      }, {})
+
+      this.setState(styles)
+    })
   }
 
-  onClick() {
-    console.log('click')
+  onClick = (e) => {
+    const $target = $(e.target)
+
+    if ($target.data('type') === 'button') {
+      const value = JSON.parse($target.data('value'))
+      Object.keys(this.state).forEach(key => {
+        if (value[key]) {
+          this.setState({[key]: value[key]})
+          this.$emit('toolbar:click', this.state)
+        }
+      })
+    }
   }
 }

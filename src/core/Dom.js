@@ -15,7 +15,16 @@ class Dom {
 
   text(content) {
     if (content === undefined) {
-      return this.$el.textContent.trim()
+      if (this.$el.tagName.toLowerCase() === 'input') {
+        return this.$el.value.trim()
+      } else {
+        return this.$el.textContent.trim()
+      }
+    }
+
+    if (this.$el.tagName.toLowerCase() === 'input') {
+      this.$el.value = content
+      return this
     }
 
     this.$el.textContent = content
@@ -32,6 +41,15 @@ class Dom {
     }
 
     return this.$el.dataset[name]
+  }
+
+  attr(attrName, value) {
+    if (!value) {
+      return this.$el.getAttribute(attrName)
+    }
+
+    this.$el.setAttribute(attrName, value)
+    return this
   }
 
   closest(selector) {
