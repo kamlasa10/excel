@@ -7,6 +7,11 @@ export function transformStrToArr(str, separator) {
   return str.split(separator)
 }
 
+export function formattedDate(d = new Date) {
+  return [d.getDate(), d.getMonth()+1, d.getFullYear()]
+      .map(n => n < 10 ? `0${n}` : `${n}`).join('.');
+}
+
 export function storage(key, data) {
   if (!data) {
     return JSON.parse(localStorage.getItem(key))
@@ -46,4 +51,12 @@ export function debounce(fn, delay) {
     clearTimeout(timeout)
     timeout = setTimeout(late, delay)
   }
+}
+
+export function addZero(num) {
+  if (+num <= 9) {
+    return `0${num}`
+  }
+
+  return num
 }

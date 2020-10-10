@@ -15,3 +15,7 @@ export function changeToolbarStylesCreator(data) {
 export function changeExcelNameCreator(data) {
   return {type: types.CHANGE_EXCEL_NAME, data}
 }
+
+export function changeDateCreator(data) {
+  return {type: types.CHANGE_DATE, data}
+}
