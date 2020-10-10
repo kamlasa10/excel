@@ -38,6 +38,9 @@ export function rootReducer(initialState, action) {
         excelName: action.data.value
       }
 
+    case types.CHANGE_DATE:
+      return {...initialState, openDate: action.data}
+
     default:
       return initialState
   }

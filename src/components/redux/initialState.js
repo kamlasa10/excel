@@ -6,7 +6,8 @@ const defaultState = {
   dataState: {},
   currentText: '',
   dataStyles: {},
-  excelName: 'Новая таблица'
+  excelName: 'Новая таблица',
+  openDate: new Date().toJSON()
 }
 
 export const initialState = storage('excel-state') ?

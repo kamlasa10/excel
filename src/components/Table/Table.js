@@ -37,6 +37,7 @@ export class Table extends ExcelComponent {
   }
 
   toHTML() {
+    console.log('Table')
     return tableRender(ROW_COUNT, this.store.getState())
   }
 

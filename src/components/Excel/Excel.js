@@ -1,12 +1,12 @@
 import {$} from '@core/Dom';
 import {Emitter} from '@core/Emitter';
 import {SubscribeStore} from '@core/subscribeStore';
+import {changeDateCreator} from '@/components/redux/actions';
 
 export class Excel {
   static name = 'excel'
 
-  constructor(selector, options) {
-    this.$el = $(document.querySelector(selector))
+  constructor(options) {
     this.components = options.components ?? []
     this.store = options.store
     this.subscribe = new SubscribeStore(this.store)
@@ -33,7 +33,7 @@ export class Excel {
   }
 
   render() {
-    this.$el.append(this.getRoot())
+    this.store.dispatch(changeDateCreator(new Date().toJSON()))
     this.components.forEach(component => component.init())
     this.subscribe.subscriberComponents(this.components)
   }
